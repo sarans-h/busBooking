@@ -34,8 +34,8 @@ function App() {
   <Route path='/bus' element={<BusShow/>}/>
   <Route path='/account' element={<Account/>}/>
   <Route path='/personaldetails' element={<PersonalDetails/>}/>
-  {/* <Route path='/businfo/:busId' element={<BusInfo/>}/> */}
-  <Route path='/businfo/:busId' element={<Test/>}/>
+  <Route path='/businfo/:busId' element={<BusInfo/>}/>
+  {/* <Route path='/businfo/:busId' element={<Test/>}/> */}
 
 
   <Route element={<ProtectedRoute allowedRole={'travel'}/>}>
