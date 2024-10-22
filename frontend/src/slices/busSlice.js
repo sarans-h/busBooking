@@ -45,6 +45,7 @@ const busSlice = createSlice({
         },
         getBusRequest:(state)=>{
             state.loading = true;
+            state.bus={};
         },
         getBusSuccess:(state,action)=>{
             state.loading = false;
@@ -114,15 +115,18 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
     }
 };
 
-export const getBus=(busId)=>async(dispatch)=>{
+export const getBus = (busId) => async (dispatch) => {
+    console.log("getBus called with busId: ", busId);  // Add this log
     try {
-        dispatch(getBusRequest());
-        const {data}= await axios.get(`/api/v1/bus/getSingle/${busId}`)
-        dispatch(getBusSuccess(data.bus));
-    }catch(error){
-        dispatch(getBusFail(error.response && error.response.data.message ? error.response.data.message : error.message))
+      dispatch(getBusRequest());
+      const { data } = await axios.get(`/api/v1/bus/getSingle/${busId}`);
+      console.log(data);
+      
+      dispatch(getBusSuccess(data.bus));
+    } catch (error) {
+      dispatch(getBusFail(error.response && error.response.data.message ? error.response.data.message : error.message));
     }
-}
+  };
 
 
 export default busSlice.reducer;

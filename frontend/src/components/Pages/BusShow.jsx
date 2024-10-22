@@ -1,11 +1,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { allBuses, clearErrors } from '../../slices/busSlice'; // Adjust the import based on your slice location
+import { allBuses, clearErrors, getBus } from '../../slices/busSlice'; // Adjust the import based on your slice location
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import { Toaster,toast } from 'react-hot-toast';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 function BusShow() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -18,7 +18,7 @@ function BusShow() {
   const [keyword, setKeyword] = useState('');
   const dispatch = useDispatch();
   const { buses, loading, error } = useSelector((state) => state.bus); // Assuming you have a 'buses' slice in Redux
-
+  
   useEffect(() => {
     dispatch(allBuses({ from, to, journeyDate })) // Fetch buses on component mount
     if (error) {
@@ -38,7 +38,13 @@ function BusShow() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  const duration = (time1, time2) => {
+    const diff = Math.abs(new Date(time2) - new Date(time1));
+    return `${Math.floor(diff / 3600000)} hours and ${(diff % 3600000) / 60000} minutes`;
+  };
+  const pricee=(f1,f2)=>{
+    return f2-f1
+  }
   function handleClickOutside(event) {
     if (sideNavRef.current && !sideNavRef.current.contains(event.target)) {
       setIsFilterOpen(false);
@@ -141,9 +147,10 @@ function BusShow() {
       </div>
       {/* Main Bus Display */}
       <div className="space-y-4 pb-9">
+        {console.log(buses)}
         {buses && buses.length > 0 ? (
           buses.map((bus) => (
-            <NavLink to={`/businfo/${bus._id}`}>
+            <Link to={`/businfo/${bus._id}`} key={bus._id} onClick={()=>dispatch(getBus(bus._id))}>
               <div key={bus._id} className="border border-gray-300 rounded-lg bg-yellow-50 shadow-lg p-6 mt-4">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -158,26 +165,27 @@ function BusShow() {
 
               <div className="grid grid-cols-4 gap-4 mb-4">
                 <div className="text-center">
-                  <p className="text-lg font-bold">{bus.time}</p>
+                  <p className="text-lg font-bold">{bus.stoppages[0].time.substring(11, 16)}</p>
                   <p className="text-sm text-gray-500">Departure</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-bold">{bus.arrival}</p>
+                  
+                  <p className="text-lg font-bold">{bus.stoppages[bus.stoppages.length-1].time.substring(11, 16)}</p>
                   <p className="text-sm text-gray-500">Arrival</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-bold">{bus.duration}</p>
+                  <p className="text-lg font-bold">{duration(bus.stoppages[0].time,bus.stoppages[bus.stoppages.length-1].time)}</p>
                   <p className="text-sm text-gray-500">Duration</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-bold">{bus.price}</p>
+                  <p className="text-lg font-bold">₹{pricee(bus.stoppages[0].fare,bus.stoppages[bus.stoppages.length-1].fare)}</p>
                   <p className="text-sm text-gray-500">Price</p>
                 </div>
               </div>
 
               <div className="flex justify-between text-sm text-gray-500 mb-4">
-                <div>Boarding: {bus.boarding}</div>
-                <div>Dropping: {bus.dropping}</div>
+                <div>Boarding: {bus.stoppages[0].location}</div>
+                <div>Dropping: {bus.stoppages[bus.stoppages.length-1].location}</div>
               </div>
 
               <div className="flex justify-between items-center">
@@ -186,7 +194,7 @@ function BusShow() {
                 </div>
                 <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">View Seats</button>
               </div>
-            </div></NavLink>
+            </div></Link>
           ))
         ) : (
           <div className="h-[90vh]">          <p>No buses available.</p></div>

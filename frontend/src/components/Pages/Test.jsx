@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams , useNavigate} from 'react-router-dom'
 import { getBus } from '../../slices/busSlice';
 
-const BusInfo = () => {
+const Test = () => {
     const { busId } = useParams();
     console.log(busId)
     const navigate = useNavigate();
@@ -177,4 +177,4 @@ const BusInfo = () => {
     )
 }
 
-export default BusInfo
+export default Test

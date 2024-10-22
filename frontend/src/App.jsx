@@ -11,6 +11,7 @@ import MyBookings from './components/Pages/MyBookings.jsx'
 
 import { BrowserRouter,Route,Routes } from 'react-router-dom';
 import BusInfo from './components/Pages/BusInfo.jsx'
+import Test from './components/Pages/Test.jsx'
 import { useDispatch } from 'react-redux'
 import { loadUser } from './slices/userSlice.js'
 import ProtectedRoute from './components/Routes/ProtectedRoute.jsx'
@@ -34,6 +35,9 @@ function App() {
   <Route path='/account' element={<Account/>}/>
   <Route path='/personaldetails' element={<PersonalDetails/>}/>
   <Route path='/businfo/:busId' element={<BusInfo/>}/>
+  {/* <Route path='/businfo/:busId' element={<Test/>}/> */}
+
+
   <Route element={<ProtectedRoute allowedRole={'travel'}/>}>
   <Route path='/addBus' element={<AddBus/>}/>
   </Route>
