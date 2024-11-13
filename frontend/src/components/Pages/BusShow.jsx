@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { allBuses, clearErrors, getBus } from '../../slices/busSlice'; // Adjust the import based on your slice location
 import { AiOutlineSearch } from 'react-icons/ai';
-
+import {Pagination} from "@nextui-org/react";
 import { Toaster,toast } from 'react-hot-toast';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 function BusShow() {
@@ -16,16 +16,17 @@ function BusShow() {
   
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
-  const { buses, loading, error } = useSelector((state) => state.bus); // Assuming you have a 'buses' slice in Redux
-  
+  const { buses, loading, error,busescount } = useSelector((state) => state.bus); // Assuming you have a 'buses' slice in Redux
   useEffect(() => {
-    dispatch(allBuses({ from, to, journeyDate })) // Fetch buses on component mount
+    console.log("Fetching data for page:", currentPage);
+    dispatch(allBuses({keyword, from, to, journeyDate,currentPage })) // Fetch buses on component mount
     if (error) {
       toast.error(error.message);
       dispatch(clearErrors());
     }
-  }, [dispatch,from,to,journeyDate])
+  }, [dispatch,from,to,journeyDate,currentPage])
 
   const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -51,6 +52,8 @@ function BusShow() {
     }
   }
   const handleSearch = () => {
+    setCurrentPage(1);
+  
     dispatch(allBuses({keyword,from,to,journeyDate})); // Fetch buses based on the search keyword
   };
 
@@ -58,7 +61,7 @@ function BusShow() {
   if (error) return <p>Error fetching buses: {error}</p>;
 
   return (
-    <div className="relative pt-20 h-auto px-4 md:px-10 lg:px-28 bg-yellow-100">
+    <div className="relative pt-20   px-4 md:px-10 lg:px-28 bg-gradient-to-b min-h-[100vh] to-yellow-200 from-yellow-100 ">
       {/* Filter Button */}
       <button
         onClick={toggleFilter}
@@ -146,9 +149,9 @@ function BusShow() {
         </button>
       </div>
       {/* Main Bus Display */}
-      <div className="space-y-4 pb-9">
-        {console.log(buses)}
-        {buses && buses.length > 0 ? (
+      <div className="space-y-4 pb-9 h-full">
+        {/* {console.log(buses)} */}
+        {buses && buses.length > 0 ? (<>{
           buses.map((bus) => (
             <Link to={`/businfo/${bus._id}`} key={bus._id} onClick={()=>dispatch(getBus(bus._id))}>
               <div key={bus._id} className="border border-gray-300 rounded-lg bg-yellow-50 shadow-lg p-6 mt-4">
@@ -184,8 +187,8 @@ function BusShow() {
               </div>
 
               <div className="flex justify-between text-sm text-gray-500 mb-4">
-                <div>Boarding: {bus.stoppages[0].location}</div>
-                <div>Dropping: {bus.stoppages[bus.stoppages.length-1].location}</div>
+                <div>Boarding: {from?from:bus.stoppages[0].location}</div>
+                <div>Dropping: {to?to:bus.stoppages[bus.stoppages.length-1].location}</div>
               </div>
 
               <div className="flex justify-between items-center">
@@ -195,12 +198,23 @@ function BusShow() {
                 <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">View Seats</button>
               </div>
             </div></Link>
-          ))
+          ))}
+          <div className="w-[100%] mx-auto flex relative justify-center bottom-0">
+          <Pagination
+        total={Math.ceil(busescount / 4)} // Total pages calculated based on bus count
+        page={currentPage}
+        onChange={(page) => setCurrentPage(page)} // Update `currentPage` on change
+        color="warning"
+      />
+        </div></>
         ) : (
           <div className="h-[90vh]">          <p>No buses available.</p></div>
 
         )}
+
+        
       </div>
+
       <Toaster/>
     </div>
   );

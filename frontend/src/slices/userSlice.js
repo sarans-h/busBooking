@@ -167,6 +167,7 @@ export const logoutUser = () => async (dispatch) => {
     try {
         await axios.get('/api/v1/auth/logout'); // Assuming this logs the user out and clears the cookie
         dispatch(logoutSuccess());
+        persistStore(store).purge();
     } catch (error) {
         dispatch(logoutFail(
             error.response && error.response.data.message

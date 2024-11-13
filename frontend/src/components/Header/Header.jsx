@@ -51,11 +51,9 @@ function out(){
     <Navbar
       isBordered
       className={`fixed flex items-center z-10 transition-all bg-transparent ${
-       ( location.pathname === '/addbus'||location.pathname==='/bus') 
-          ? 'text-black' 
-          : isScrolled 
-            ? 'text-[#4444441c]/50' 
-            : 'text-white'
+       ( location.pathname === '/') 
+          ?isScrolled?'text-black' : 'text-white'
+            : 'text-black' 
       }
       `}
     >

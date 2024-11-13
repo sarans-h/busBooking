@@ -17,6 +17,7 @@ import { loadUser } from './slices/userSlice.js'
 import ProtectedRoute from './components/Routes/ProtectedRoute.jsx'
 import { Toaster } from 'react-hot-toast'
 import AddBus from './components/Pages/AddBus.jsx'
+import Ticket from './components/Pages/Ticket.jsx'
 function App() {
   const dispatch = useDispatch();
 
@@ -35,6 +36,10 @@ function App() {
   <Route path='/account' element={<Account/>}/>
   <Route path='/personaldetails' element={<PersonalDetails/>}/>
   <Route path='/businfo/:busId' element={<BusInfo/>}/>
+  <Route path='/bookings' element={<MyBookings/>}/>
+  <Route path='/tick/:bookingId' element={<Ticket/>}/>
+
+
   {/* <Route path='/businfo/:busId' element={<Test/>}/> */}
 
 

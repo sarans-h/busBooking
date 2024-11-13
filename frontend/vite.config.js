@@ -11,6 +11,8 @@ export default defineConfig({
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/fetchseats': 'http://localhost:8080',
+      '/book':'http://localhost:8080'
     },
   },
 })

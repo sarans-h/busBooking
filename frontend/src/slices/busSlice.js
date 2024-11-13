@@ -33,10 +33,14 @@ const busSlice = createSlice({
         getAllBusRequest:(state)=>{
             state.loading = true;
             state.buses=[]
+            state.busescount=0;
         },
         getAllBusSuccess:(state,action)=>{
             state.loading = false;
-            state.buses = action.payload;
+            state.buses = action.payload.buses;
+            console.log(action.payload);
+            state.busescount=action.payload.totalBuses
+
 
         },
         getAllBusFail:(state,action)=>{
@@ -103,7 +107,7 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
         const { data } = await axios.get(query);
 
         // Dispatch the success action with retrieved buses
-        dispatch(getAllBusSuccess(data.buses));
+        dispatch(getAllBusSuccess(data));
     } catch (error) {
         dispatch(
             getAllBusFail(
@@ -116,11 +120,11 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
 };
 
 export const getBus = (busId) => async (dispatch) => {
-    console.log("getBus called with busId: ", busId);  // Add this log
+    // console.log("getBus called with busId: ", busId);  // Add this log
     try {
       dispatch(getBusRequest());
       const { data } = await axios.get(`/api/v1/bus/getSingle/${busId}`);
-      console.log(data);
+    //   console.log(data);
       
       dispatch(getBusSuccess(data.bus));
     } catch (error) {

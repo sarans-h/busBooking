@@ -26,16 +26,16 @@ const ProtectedRoute = ({ allowedRole }) => {
     // Redirect if user is not authenticated
     if (!isAuthenticated) {
         toast.error('You need to log in.');
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login"  />;
     }
 
     // If user role doesn't match the allowedRole, show toast and redirect
     if (user && user.role !== allowedRole) {
         toast.error('You are not allowed to access this page.');
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/" replace />;
     }
 
-    return (
+    return ( 
         <>
             <Toaster containerStyle={{ bottom: 0 }} />
             <Outlet />

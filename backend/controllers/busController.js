@@ -115,13 +115,18 @@ exports.getAllBuses = catchAsyncErrors(async (req, res, next) => {
     let busCount=await Bus.countDocuments();
 
     let apiFeatures=new FeaturesUtils(Bus.find(),req.query).search().filter().filterByStoppagesAndDate();
-    apiFeatures.pagination(resultPerPage);
     
+    const totalBuses = await apiFeatures.query.clone().countDocuments();
+
+    // 3. Now apply pagination to the same query
+    apiFeatures.pagination(resultPerPage);
     const buses = await apiFeatures.query;
+
     res.status(200).json({
         success: true,
         message: 'All buses retrieved successfully',
-        buses
+        buses,
+        totalBuses,
     });
 
 })
@@ -204,3 +209,57 @@ exports.getSingleBus = catchAsyncErrors(async (req, res, next) => {
 
     });
 })
+
+exports.seedBuses = async (req, res) => {
+    try {
+        // Clear existing buses
+        await Bus.deleteMany({});
+
+        for (let i = 1; i <= 100; i++) {
+            const bus = new Bus({
+                name: `Bus ${i}`,
+                driver: {
+                    name: `Driver ${i}`,
+                    contact: `1234567890`,
+                },
+                busNumber: `BUS${i}`,
+                type: ['AC', 'Non-AC', 'Sleeper', 'Semi-Sleeper'][i % 4],
+                features: ["Wi-Fi", "Charging Ports", "Reclining Seats"],
+                description: `This is a description for Bus ${i}.`,
+                numberOfSeats: 30 + (i % 3),
+                travel: req.user._id,
+                journeyDate: new Date(),
+                stoppages: [
+                    {
+                        location: `Stop ${i}-A`,
+                        time: new Date(),
+                        fare: 50 + (i * 2),
+                    },
+                    {
+                        location: `Stop ${i}-B`,
+                        time: new Date(),
+                        fare: 100 + (i * 2),
+                    },
+                    {
+                        location: `Stop ${i}-C`,
+                        time: new Date(),
+                        fare: 50 + (i * 2),
+                    },
+                    {
+                        location: `Stop ${i}-D`,
+                        time: new Date(),
+                        fare: 100 + (i * 2),
+                    },
+                ],
+                startTime: new Date(),
+            });
+
+            await bus.save(); // This will trigger the pre-save hook and initialize seats
+        }
+
+        res.status(201).json({ success: true, message: "Seeded 100 buses successfully!" });
+    } catch (error) {
+        console.error("Seeding error:", error);
+        res.status(500).json({ success: false, message: "Failed to seed buses." });
+    }
+};
