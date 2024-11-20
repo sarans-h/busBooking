@@ -1,4 +1,5 @@
 const app=require('./app');
+const cloudinary=require('cloudinary');
 const connectDB=require('./config/database.js');
 const http = require('http'); // Import http
 const { Server } = require('socket.io'); // Import Socket.io
@@ -12,7 +13,7 @@ const server = http.createServer(app); // Create the http server
 const io = new Server(server, {
   cors: {
     origin: '*', // Configure the origin as needed for your app
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT']
   },
   pingTimeout: 30000, // 30 seconds before a ping timeout occurs
   pingInterval: 15000
@@ -86,6 +87,11 @@ u=userId;
   });
 });
 
+cloudinary.config({
+  cloud_name:process.env.CLOUDINARY_NAME,
+  api_key:process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET
+})
 
 
 server.listen(PORT, () => {

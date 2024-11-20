@@ -30,7 +30,7 @@ const ProtectedRoute = ({ allowedRole }) => {
     }
 
     // If user role doesn't match the allowedRole, show toast and redirect
-    if (user && user.role !== allowedRole) {
+    if (allowedRole && user && user.role !== allowedRole) {
         toast.error('You are not allowed to access this page.');
         return <Navigate to="/" replace />;
     }

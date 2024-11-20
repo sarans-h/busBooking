@@ -74,7 +74,20 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-
+        updateProfileRequest:(state)=>{
+            state.loading=true;
+        },
+        updateProfileSuccess:(state,action)=>{
+            state.loading = false;
+            state.isUpdated = true; 
+        },
+        updateProfileFail:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload;
+        },
+        updateProfileReset:(state,action)=>{
+            state.isUpdated=false;
+        },
         // Reset errors
         clearErrors: (state) => {
             state.error = null;
@@ -95,6 +108,10 @@ export const {
     loadUserFail,
     logoutSuccess,
     logoutFail,
+    updateProfileRequest,
+    updateProfileSuccess,
+    updateProfileFail,
+    updateProfileReset,
     clearErrors
 } = userSlice.actions;
 
@@ -196,5 +213,23 @@ export const registerUser=(userData)=>async (dispatch)=>{
     }
 
 }
+
+export const updateProfile = (userData) => async (dispatch) => {
+    try {
+        console.log("hiiii")
+        dispatch(updateProfileRequest());
+        const config = { headers: { "Content-Type": "multipart/form-data" } };
+        const { data } = await axios.put('/api/v1/auth/update/me', userData,config);
+        console.log('====================================');
+        console.log(data);
+        console.log('====================================');
+        dispatch(updateProfileSuccess(data.success));
+    } catch (error) {
+        dispatch(updateProfileFail(error.response && error.response.data.message 
+            ? error.response.data.message 
+            : error.message));
+    }
+};
+
 
 export default userSlice.reducer;

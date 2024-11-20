@@ -65,19 +65,19 @@ function BusShow() {
       {/* Filter Button */}
       <button
         onClick={toggleFilter}
-        className={`fixed left-4 top-24 px-4 py-2 rounded-md z-30 shadow-md text-black bg-gray-200 hover:bg-gray-300 transition ${isFilterOpen ? 'hidden' : ''}`}>
+        className={`fixed left-4 top-24 px-4 py-2 rounded-md z-30 shadow-md text-black bg-yellow-200 hover:bg-yellow-300 transition ${isFilterOpen ? 'hidden' : ''}`}>
         ☰
       </button>
 
       {/* Sidebar for Filters */}
       <div
-        className={`fixed top-0 ${isFilterOpen ? 'left-0' : '-left-full'} h-full w-full sm:w-64 bg-white shadow-2xl p-6 transition-transform duration-300 ease-in-out z-10`}
+        className={`fixed bottom-0 ${isFilterOpen ? 'left-0' : '-left-full'} h-[91vh]  w-full sm:w-64 bg-yellow-100 shadow-2xl p-6 transition-transform   z-10 duration-1000 ease-in-out  `}
         ref={sideNavRef}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Filters</h2>
           <button
             onClick={toggleFilter}
-            className="text-black px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-300 transition">
+            className="text-black px-4 py-2 rounded-md bg-yellow-100 hover:bg-yellow-300 transition">
             ✕
           </button>
         </div>
@@ -124,14 +124,14 @@ function BusShow() {
           <input 
             type="text" 
             placeholder="Operator Name" 
-            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-yellow-500"
           />
         </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-500 transition w-full">Apply Filters</button>
+        <button className="bg-yellow-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-yellow-500 transition w-full">Apply Filters</button>
       </div>
 
-      <h1 className="text-4xl font-bold mb-8 text-center text-blue-700">Available Buses</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center text-yellow-700">Available Buses</h1>
  {/* Search Box */}
  <div className="flex justify-center items-center mb-8">
         <input
@@ -162,7 +162,7 @@ function BusShow() {
                 </div>
                 <div className="flex items-center space-x-1">
                   <span className="text-green-600 font-bold">{bus.rating}</span>
-                  <span className="text-xs text-gray-500">★</span>
+                  <span className="text-xs text-gray-500">{bus.journeyDate.substring(0,10)}</span>
                 </div>
               </div>
 

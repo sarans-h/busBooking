@@ -73,9 +73,6 @@ exports.addBus = catchAsyncErrors(async (req, res, next) => {
     if (!journeyDate) {
         return next(new ErrorHandler('Journey date is required', 400));
     }
-    if (!startTime) {
-        return next(new ErrorHandler('Start time is required', 400));
-    }
     if (!stoppages || stoppages.length === 0) {
         return next(new ErrorHandler('Stoppages information is required', 400));
     }
@@ -98,7 +95,8 @@ exports.addBus = catchAsyncErrors(async (req, res, next) => {
         travel,
         journeyDate,
         stoppages,
-        startTime
+        startTime,
+        ownerId:req.user.id
     });
 
     // Respond with success message
@@ -209,13 +207,15 @@ exports.getSingleBus = catchAsyncErrors(async (req, res, next) => {
 
     });
 })
-
+// seed
 exports.seedBuses = async (req, res) => {
     try {
         // Clear existing buses
         await Bus.deleteMany({});
 
         for (let i = 1; i <= 100; i++) {
+            const journ= new Date();
+            journ.setDate(journ.getDate() + i);
             const bus = new Bus({
                 name: `Bus ${i}`,
                 driver: {
@@ -228,7 +228,7 @@ exports.seedBuses = async (req, res) => {
                 description: `This is a description for Bus ${i}.`,
                 numberOfSeats: 30 + (i % 3),
                 travel: req.user._id,
-                journeyDate: new Date(),
+                journeyDate: journ,
                 stoppages: [
                     {
                         location: `Stop ${i}-A`,
@@ -251,7 +251,6 @@ exports.seedBuses = async (req, res) => {
                         fare: 100 + (i * 2),
                     },
                 ],
-                startTime: new Date(),
             });
 
             await bus.save(); // This will trigger the pre-save hook and initialize seats
@@ -263,3 +262,9 @@ exports.seedBuses = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to seed buses." });
     }
 };
+// getmyBuses for travel
+exports.getMyBuses = catchAsyncErrors(async (req,res,next)=>{
+    const buses = (await Bus.find({travel:req.user._id}).select("+seats"));
+    res.status(200).json({success:true,data:buses});
+    
+})

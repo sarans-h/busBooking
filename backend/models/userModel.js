@@ -3,6 +3,8 @@ const validator=require("validator");
 const bcrypt=require("bcryptjs");
 const jwt = require('jsonwebtoken')
 const crypto=require('crypto');
+const { ObjectId } = mongoose.Schema;
+
 const userSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -51,6 +53,10 @@ const userSchema=new mongoose.Schema({
         max:[9999999999,"Enter Correct Phone Number"],
         required:[true,"Enter Phone Number"]
     },
+    myBooking:[{
+        type: ObjectId, 
+        ref: 'Booking',
+    }],
     resetPasswordToken:String,
     resetPasswordExpire:Date,
 
@@ -71,11 +77,11 @@ userSchema.methods.getJWTToken=function(){
 userSchema.methods.comparePassword=async function(password){
     return await bcrypt.compare(password,this.password);
 }
-userSchema.methods.getResetPasswordToken=function(){
-    const resetToken= crypto.randomBytes(20).toString("hex");
-    this.resetPasswordToken=crypto.createHash("sha256").update(resetToken).digest("hex");
-    this.resetPasswordExpire= Date.now() + 15 * 60 * 1000;
-    return resetToken;
-}
+// userSchema.methods.getResetPasswordToken=function(){
+//     const resetToken= crypto.randomBytes(20).toString("hex");
+//     this.resetPasswordToken=crypto.createHash("sha256").update(resetToken).digest("hex");
+//     this.resetPasswordExpire= Date.now() + 15 * 60 * 1000;
+//     return resetToken;
+// }
 
 module.exports=mongoose.model("User",userSchema);

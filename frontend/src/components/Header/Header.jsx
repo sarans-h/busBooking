@@ -15,6 +15,7 @@ import s from '../../assets/1119840-200.png';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../slices/userSlice';
+import im from "../../assets/profile.webp"
 
 const Header = () => {
   const dispatch=useDispatch();
@@ -43,10 +44,14 @@ function out(){
   dispatch(logoutUser());
   navigate("/");
   }
+  console.log(im)
   // console.log(user);
   const handleAddBusClick = () => {
     navigate('/addbus');
   };
+  const handleManageBusClick=()=>{
+    navigate('/managebus')
+  }
   return (
     <Navbar
       isBordered
@@ -79,7 +84,7 @@ function out(){
         </Dropdown>
 
         {/* Logo and Title Visible on Larger Screens */}
-        <p className="font-bold text-lg w-[9rem]">RideVerse</p>
+        <p className="font-bold text-lg w-[9rem] cursor-pointer" onClick={()=>navigate('/')}>RideVerse</p>
       </NavbarBrand>
 
       {/* Center content - hidden on small screens, shown on large screens */}
@@ -94,14 +99,9 @@ function out(){
             Bus
           </NavLink>
         </NavbarItem>
-        <NavbarItem isActive={isActive('/cabs')}>
-          <NavLink to="/cabs" className="text-inherit">
-            Cabs
-          </NavLink>
-        </NavbarItem>
         <NavbarItem isActive={isActive('/contactus')} >
-          <NavLink to="/contactus" className="text-inherit">
-            Contact Us
+          <NavLink to="/aboutus" className="text-inherit">
+            About Us
           </NavLink>
         </NavbarItem>
       </NavbarContent>
@@ -117,19 +117,32 @@ function out(){
               color="secondary"
               name="Jason Hughes"
               size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              src={user?.avatar.url==="https://example.com/duumy.jpg"?im:user?.avatar.url}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat" >
-            <DropdownItem key="profile" className="h-14 gap-2">
+            <DropdownItem key="profile" className="h-14 gap-2" onClick={()=>navigate('/my')}>
               <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">{user.email}</p>
+              <p className="font-semibold">{user?.email}</p>
             </DropdownItem>
             {
-             user.role==='travel'?( <DropdownItem onClick={handleAddBusClick}>
+             user?.role==='travel'?( <DropdownItem onClick={handleAddBusClick}>
                 Add Bus
   
               </DropdownItem>):(null)
+            }
+             {
+             user?.role==='travel'?( <DropdownItem onClick={handleManageBusClick}>
+                Manage Buses
+  
+              </DropdownItem>):(null)
+            }
+            {
+              isAuthenticated?(  <DropdownItem key="mybookings"  onClick={()=>navigate('/mybookings')}>
+                My Bookings
+  
+              </DropdownItem>):(null
+              )
             }
             {
               isAuthenticated?(  <DropdownItem key="logout" color="danger" onClick={out}>

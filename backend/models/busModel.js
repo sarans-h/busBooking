@@ -95,10 +95,6 @@ const busSchema = new mongoose.Schema({
             },
         }
     ],
-    startTime: {
-        type: Date, // Capture both date and time accurately
-        required: [true, "Please specify the bus start time"],
-    },
     availableSeats: {
         type: Number,
         default: 0, // Default to zero until calculated

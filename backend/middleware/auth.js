@@ -6,7 +6,7 @@ exports.isAuthenticatedUser=catchAsyncErrors(async(req,res,next)=>{
     const {token}=req.cookies;
     if(!token) return next(new ErrorHandler("Please Login to access this"));
    const decodedData=jwt.verify(token,process.env.JWT_SECRET);
-   req.user=await User.findById(decodedData.id);//this help us to aceess the usert data whenever we want whne user is login
+   req.user=await User.findById(decodedData.id).populate('myBooking');//this help us to aceess the usert data whenever we want whne user is login
    next();
 }
 );

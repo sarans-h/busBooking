@@ -188,10 +188,19 @@ const BusInfo = () => {
   }).filter(update => update.seatId); // Filter out any null seatId
 
   // Construct the final object
+  if(toStop===''||fromStop===''){
+    toast.error("Please select to and from stops.");
+    return;
+  }
+  const journeyDate=busData.journeyDate;
   const payload = {
     seatUpdates,
     userId,
-    busId
+    busId,
+    fromStop,
+    toStop,
+    journeyDate,
+    
   };
   await axios.post('/api/v1/book/m', payload)
   .then(response => {
@@ -225,7 +234,7 @@ const BusInfo = () => {
             >
               <option value="" disabled>Select departure stop</option>
               {busData?.stoppages?.map((stop, index) => (
-                <option key={index} value={stop.location}>{stop.location}</option>
+                <option key={index} value={stop.location}>{stop.location} </option>
               ))}
             </select>
           </div>

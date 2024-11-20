@@ -21,7 +21,6 @@ const AddBus = () => {
     travel: '',
     journeyDate: '',
     stoppages: [{ location: '', time: '', fare: '' }],
-    startTime: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +53,6 @@ const AddBus = () => {
         travel: '',
         journeyDate: '',
         stoppages: [{ location: '', time: '', fare: '' }],
-        startTime: '',
       });
       dispatch(newBusReset());
       localStorage.removeItem('busData');
@@ -124,7 +122,6 @@ const AddBus = () => {
     formData.append('description', busData.description);
     formData.append('isAvailable', busData.isAvailable);
     formData.append('journeyDate', busData.journeyDate);
-    formData.append('startTime', busData.startTime);
 
     // Append driver details (flattened)
     formData.append('driverName', busData.driver.name);
@@ -262,20 +259,10 @@ const AddBus = () => {
                 <Input
                   bordered
                   placeholder="Journey Date"
-                  type="date"
+                  type="datetime-local"
                   name="journeyDate"
                   fullWidth
                   value={busData.journeyDate}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  bordered
-                  placeholder="Start Time"
-                  type="datetime-local"
-                  name="startTime"
-                  fullWidth
-                  value={busData.startTime}
                   onChange={handleChange}
                   required
                 />

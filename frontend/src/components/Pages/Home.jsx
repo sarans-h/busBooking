@@ -3,6 +3,7 @@ import s from "../../assets/ben-garratt-0IDGYSVn27U-unsplash.jpg";
 import { Button, Link } from '@nextui-org/react';
 import { Toaster } from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
+import Locator from './Locator';
 
 const Home = () => {
   const [from, setFrom] = useState('');
@@ -20,6 +21,7 @@ const Home = () => {
         className="h-[100vh] w-[100%] bg-cover bg-center relative flex items-center justify-center"
         style={{ backgroundImage: `url(${s})` }}
       >
+      
         <div className="absolute inset-0 bg-black/40 z-0" />
         <div className="z-10 text-center text-white">
           <h1 className="text-5xl font-bold mb-6">
@@ -29,6 +31,10 @@ const Home = () => {
           <p className="text-xl mb-6">
             Find the best bus routes and prices for your journey.
           </p>
+          <div className="z-30">
+        <Locator title={"saransh"} children={"sa"}/>
+
+        </div>
 
           {/* Search Bar */}
           <div className="flex flex-col sm:flex-row gap-[1.5rem] justify-center mb-8 items-center sm:gap-6">

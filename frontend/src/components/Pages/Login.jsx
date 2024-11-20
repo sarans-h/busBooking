@@ -5,6 +5,7 @@ import rb from '../../assets/1119840-200.png';
 import busImage from '../../assets/ben-garratt-0IDGYSVn27U-unsplash.jpg';
 import { loginUser, registerUser } from '../../slices/userSlice.js';
 import { Toaster } from 'react-hot-toast';
+import im from "../../assets/profile.webp"
 
 const Login = () => {
   const [searchParams] = useSearchParams();
@@ -30,6 +31,8 @@ const Login = () => {
     role: "",
     phoneNo: ""
   });
+  const [avatar, setAvatar] = useState(im);
+  const [avatarPreview, setAvatarPreview] = useState(im);
   const { name, email, password, role, phoneNo } = user;
 
   const toggleMode = () => {
@@ -37,6 +40,17 @@ const Login = () => {
   };
 
   const dataChange = (e) => {
+    if(e.target.name==="avatar"){
+      const reader=new FileReader();
+      reader.onload=()=>{
+        if(reader.readyState===2){
+          setAvatarPreview(reader.result);
+          setAvatar(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    else 
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
@@ -53,6 +67,7 @@ const Login = () => {
     myForm.set("password", password);
     myForm.set("role", role);
     myForm.set("phoneNo", phoneNo);
+    myForm.set("avatar", avatar);
     dispatch(registerUser(myForm));
   };
 
@@ -147,12 +162,13 @@ const Login = () => {
                   className="w-full p-3 text-lg border border-gray-300 rounded-lg bg-[#4444441c] text-white"
                   accept="image/*"
                   name="avatar"
+                  onChange={dataChange}
                 />
                 <label
                   htmlFor="file-input"
                   className="absolute right-4 top-4 bg-yellow-100 border border-yellow-400 rounded-full p-1 cursor-pointer"
                 >
-                  <img alt="Preview" className="w-8 h-8 rounded-full object-cover" />
+                  <img alt="Preview" src={avatarPreview} className="w-8 h-8 rounded-full object-cover" />
                 </label>
               </div>
             </div>
