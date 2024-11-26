@@ -152,7 +152,7 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
                 'Content-Type': 'application/json',
             }
         };
-        const { data } = await axios.post('/api/v1/auth/login', { email, password }, config);
+        const { data } = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/auth/login', { email, password }, config);
         dispatch(loginSuccess(data.user));
     } catch (error) {
         dispatch(loginFail(
