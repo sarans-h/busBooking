@@ -124,7 +124,7 @@ export const checkAndLoadUser = createAsyncThunk('user/checkAndLoadUser', async 
     if (!isAuthenticated && !user) {
         try {
             dispatch(loadUserRequest());
-            const { data } = await axios.get('/api/v1/auth/me'); // API call to get user info
+            const { data } = await axios.get('https://busbooking-4ykq.onrender.com/api/v1/auth/me'); // API call to get user info
             dispatch(loadUserSuccess(data.user));
         } catch (error) {
             dispatch(loadUserFail(
@@ -167,7 +167,7 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
     try {
         dispatch(loadUserRequest());
-        const { data } = await axios.get('/api/v1/auth/me'); // Assuming this endpoint fetches user info if authenticated
+        const { data } = await axios.get('https://busbooking-4ykq.onrender.com/api/v1/auth/me'); // Assuming this endpoint fetches user info if authenticated
         dispatch(loadUserSuccess(data.user));
     } catch (error) {
         dispatch(loadUserFail(
@@ -181,7 +181,7 @@ export const loadUser = () => async (dispatch) => {
 // Thunk to logout user
 export const logoutUser = () => async (dispatch) => {
     try {
-        await axios.get('/api/v1/auth/logout'); // Assuming this logs the user out and clears the cookie
+        await axios.get('https://busbooking-4ykq.onrender.com/api/v1/auth/logout'); // Assuming this logs the user out and clears the cookie
         dispatch(logoutSuccess());
         persistStore(store).purge();
     } catch (error) {
@@ -202,7 +202,7 @@ export const registerUser=(userData)=>async (dispatch)=>{
             }
 
         }
-        const {data}=await axios.post('/api/v1/auth/register',userData,config);
+        const {data}=await axios.post('https://busbooking-4ykq.onrender.com/api/v1/auth/register',userData,config);
         dispatch(registerSuccess(data.user));
     }
     catch(error){
@@ -218,7 +218,7 @@ export const updateProfile = (userData) => async (dispatch) => {
         console.log("hiiii")
         dispatch(updateProfileRequest());
         const config = { headers: { "Content-Type": "multipart/form-data" } };
-        const { data } = await axios.put('/api/v1/auth/update/me', userData,config);
+        const { data } = await axios.put('https://busbooking-4ykq.onrender.com/api/v1/auth/update/me', userData,config);
 
         dispatch(updateProfileSuccess(data.success));
     } catch (error) {
