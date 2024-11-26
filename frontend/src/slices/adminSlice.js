@@ -54,7 +54,7 @@ export const {
 export const getUsers=()=>async(dispatch)=>{
     try{
         dispatch(getAllUserRequest());
-        const response=await axios.get("/api/v1/admin/allusers");
+        const response=await axios.get("https://busbooking-4ykq.onrender.com/api/v1/admin/allusers");
         dispatch(getAllUserSuccess(response.data.users));
     }
     catch(error){
@@ -68,7 +68,7 @@ export const getUsers=()=>async(dispatch)=>{
 export const revenue=()=>async(dispatch)=>{
     try{
         dispatch(getTotalRevenueRequest());
-        const response=await axios.get("/api/v1/admin/totalrevenue");
+        const response=await axios.get("https://busbooking-4ykq.onrender.com/api/v1/admin/totalrevenue");
         console.log(response);
         dispatch(getTotalRevenueSuccess(response.data.totalRevenue));
     }
