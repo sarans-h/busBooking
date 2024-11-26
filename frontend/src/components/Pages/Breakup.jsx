@@ -10,7 +10,7 @@ const Breakup = () => {
     const fetchBuses = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/v1/bus/mybuses");
+        const response = await axios.get("https://busbooking-4ykq.onrender.com/api/v1/bus/mybuses");
         const busesData = response.data.data
         .filter(bus => bus.numberOfSeats - bus.availableSeats !== 0)
         .map((bus) => ({
