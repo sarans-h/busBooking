@@ -8,7 +8,7 @@ const QReader = () => {
 
   const handleScan = (data) => {
     if (data) {
-      console.log(typeof data);
+      // console.log(typeof data);
       setScanResult(data.text); // Use `.text` if the QR data comes as an object
     }
   };
@@ -25,7 +25,7 @@ const QReader = () => {
     }
 
     try {
-      const url = "api/v1/book/completed/" + scanResult.substring(1, scanResult.length - 1);
+      const url = "https://busbooking-4ykq.onrender.com/api/v1/book/completed/" + scanResult.substring(1, scanResult.length - 1);
       console.log(url);
       const response = await axios.put(url);
       toast.success(response.data.message || "Booking marked as completed!");
