@@ -52,7 +52,7 @@ const BusInfo = () => {
 
     const fetchSeats = async () => {
       try {
-        const response = await axios.get(`/fetchseats/${busId}`);
+        const response = await axios.get(`https://busbooking-4ykq.onrender.com/fetchseats/${busId}`);
 
         // console.(response); // Log the entire response object
         // console.log(response.data); // Log response data (should contain seats)
