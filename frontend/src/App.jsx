@@ -22,7 +22,7 @@ import MyProfile from './components/Pages/MyProfile.jsx'
 import ManageBus from './components/Pages/ManageBus.jsx'
 import Breakup from './components/Pages/Breakup.jsx'
 import Admin from './components/Pages/Admin.jsx'
-import { QrReader } from 'react-qr-reader'
+// import { QrReader } from 'react-qr-reader'
 import QReader from './components/Pages/QReader.jsx'
 function App() {
   const dispatch = useDispatch();
