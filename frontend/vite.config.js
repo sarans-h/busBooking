@@ -8,7 +8,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'https://busbooking-4ykq.onrender.com',
-        changeOrigin: true,
+        secure:false,
+        
         // rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/fetchseats': 'https://busbooking-4ykq.onrender.com',
