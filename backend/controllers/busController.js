@@ -130,51 +130,39 @@ exports.getAllBuses = catchAsyncErrors(async (req, res, next) => {
 })
 // edit bus
 exports.editBus = catchAsyncErrors(async (req, res, next) => {
-    
+    console.log("edit");
+
     let bus = await Bus.findById(req.params.busId);
     if (!bus) {
         return next(new ErrorHandler('Bus not found', 404));
     }
-     // Check if the authenticated user is the one who created the bus
-     if (bus.travel.toString() !== req.user.id) {
-        return next(new ErrorHandler('You are not authorized to update this bus', 403));
+
+    // Check if the authenticated user is the one who created the bus (optional)
+    // if (bus.travel.toString() !== req.user.id) {
+    //     return next(new ErrorHandler('You are not authorized to update this bus', 403));
+    // }
+
+    const { name } = req.body; // Extract only the 'name' field from the request body
+
+    if (!name) {
+        return next(new ErrorHandler('Name is required to update the bus', 400));
     }
-    const {
-        name,
-        driver,
-        busNumber,
-        type,
-        features,
-        description,
-        numberOfSeats,
-        travel,
-        journeyDate,
-        stoppages,
-        startTime,
-        isAvailable
-    } = req.body;
 
-    bus.name = name || bus.name;
-    bus.driver = driver || bus.driver;
-    bus.busNumber = busNumber || bus.busNumber;
-    bus.type = type || bus.type;
-    bus.features = features || bus.features;
-    bus.description = description || bus.description;
-    bus.numberOfSeats = numberOfSeats || bus.numberOfSeats;
-    bus.travel = travel || bus.travel;
-    bus.journeyDate = journeyDate || bus.journeyDate;
-    bus.stoppages = stoppages || bus.stoppages;
-    bus.startTime = startTime || bus.startTime;
-    bus.isAvailable = isAvailable !== undefined ? isAvailable : bus.isAvailable;
+    try {
+        bus.name = name; // Update the 'name' field
+        const updatedBus = await bus.save(); // Save the updated document
 
-    const updatedBus = await bus.save();
-
-    res.status(200).json({
-        success: true,
-        message: 'Bus updated successfully',
-        bus: updatedBus
-    });
+        res.status(200).json({
+            success: true,
+            message: 'Bus name updated successfully',
+            bus: updatedBus,
+        });
+    } catch (e) {
+        console.error(e);
+        return next(new ErrorHandler('Error updating bus name', 500));
+    }
 });
+
 // delete bus
 exports.deleteBus = catchAsyncErrors(async (req, res, next) => {
     const bus = await Bus.findById(req.params.busId);
@@ -183,9 +171,9 @@ exports.deleteBus = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Check if the authenticated user is the one who created the bus
-    if (bus.travel.toString() !== req.user.id) {
-        return next(new ErrorHandler('You are not authorized to delete this bus', 403));
-    }
+    // if (bus.travel.toString() !== req.user.id) {
+    //     return next(new ErrorHandler('You are not authorized to delete this bus', 403));
+    // }
 
     
     await Bus.deleteOne({ _id: req.params.busId });

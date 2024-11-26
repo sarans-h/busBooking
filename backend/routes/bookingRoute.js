@@ -3,7 +3,7 @@ const Booking = require('../models/bookingModel');
 const mongoose = require("mongoose");
 const Bus = require('../models/busModel');
 const User = require('../models/userModel');
-
+const stripe = require('stripe')('sk_test_51PuwfWCL3Rc138wzFeNj0Iv4mG6MCSkZpLzwK91co2p9ouFsLCGTaNwwGmLexqw4QOYjqfnPNfHSffNTt2FEDTqV00n9mc0ebo');
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const router=express.Router();
 // router.route("/tick").get(async(req,res)=>{
@@ -90,7 +90,7 @@ router.route("/m").post(isAuthenticatedUser, async (req, res) => {
         }
     }
     try {
-        const { seatUpdates, userId, busId, fromStop, toStop, journeyDate} = req.body;
+        const { seatUpdates, userId, busId, fromStop, toStop, journeyDate, paymentMethodId} = req.body;
 
         if (!Array.isArray(seatUpdates) || seatUpdates.length === 0) {
             await session.abortTransaction();
@@ -173,10 +173,20 @@ router.route("/m").post(isAuthenticatedUser, async (req, res) => {
             from:fromStop,
             to:toStop,
             fare,
-            journeyDate
+            journeyDate,
+            status:'pending'
         });
 
         await newBooking.save({ session }); // Save the booking in the same transaction
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: fare * 100, // Stripe requires amount in cents
+          currency: 'inr',
+          payment_method_types: ['card']
+        });
+        
+        newBooking.status = 'confirmed';
+        await newBooking.save({ session });
+
         const user = await User.findById(req.user._id).session(session); // Use the logged-in user's ID
         if (!user) {
             await session.abortTransaction();
@@ -185,14 +195,26 @@ router.route("/m").post(isAuthenticatedUser, async (req, res) => {
         }
 
         user.myBooking.push(newBooking._id); // Add the new booking ID to myBooking
+        
         await user.save({ session }); 
+        const spendBus=await Bus.findById(busId).session(session);
+        if (!spendBus) {
+          throw new Error('SPENDBUS not found');
+        }
+        const travelOwnerId = bus.travel;
+        const updatedTravel=await User.findByIdAndUpdate(
+          travelOwnerId,
+          { $inc: { totalEarned: fare } }, // Increment totalEarn by the fare
+          { new: true, session } // Return the updated document and use the transaction
+);
+
         // Step 4: Commit the transaction if everything is successful
         await session.commitTransaction();
         session.endSession();
 
         console.log(`Seats booked successfully for busId: ${busId}`);
         console.log('z'+newBooking._id);
-        return res.status(200).json({ msg: 'Seats booked and booking entry created successfully.',bookingId: newBooking._id });
+        return res.status(200).json({clientSecret: paymentIntent.client_secret, success:true,msg: 'Seats booked and booking entry created successfully.',bookingId: newBooking._id });
 
     } catch (err) {
         // Roll back the transaction in case of any error
@@ -249,7 +271,71 @@ router.route("/revenue").get(isAuthenticatedUser,async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Failed to calculate revenue', details: error.message });
     }
-  });               
+  });
+  
+  router.route("/confirm-payment",async (req, res) => {
+    const { paymentIntentId, paymentMethodId } = req.body;
+
+    if (!paymentIntentId) {
+        return res.status(400).json({ error: 'Payment Intent ID is required' });
+    }
+
+    try {
+        const paymentIntent = await stripe.paymentIntents.confirm(paymentIntentId, {
+            payment_method: paymentMethodId, // Optional, pass only if required
+        });
+
+        res.status(200).json({
+            message: 'Payment Intent confirmed successfully',
+            paymentIntent,
+        });
+    } catch (error) {
+        console.error('Error confirming payment intent:', error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+router.put("/completed/:bookingId",isAuthenticatedUser, async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+
+    // Fetch the booking by ID
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    // Fetch the bus by ID inside the booking
+    const bus = await Bus.findById(booking.busId);
+    if (!bus) {
+      return res.status(404).json({ error: "Bus not found" });
+    }
+
+    // Check if the travel ID matches the user's ID
+    console.log(bus.travel);
+    console.log(req.user._id)
+    if (!(bus.travel).equals(req.user._id)) {
+      return res.status(403).json({ error: "Unauthorized to update this booking" });
+    }
+    if(booking.status=="completed"){
+      return res.status(400).json({ error: "Booking is already completed" });
+    }
+
+    // Update the booking status to 'completed'
+    booking.status = "completed";
+    await booking.save();
+
+    res.status(200).json({ message: "Booking marked as completed", booking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating the booking" });
+  }
+});
+
+module.exports = router;
+
+
 
   
 module.exports = router; 

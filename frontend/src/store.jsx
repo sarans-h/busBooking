@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice.js';
 import busReducer from './slices/busSlice.js';
+import adminReducer from './slices/adminSlice.js'
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Defaults to localStorage for web
 import { combineReducers } from 'redux';
@@ -16,6 +17,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userReducer,
     bus: busReducer,
+    admin:adminReducer
 });
 
 // Create a persisted reducer

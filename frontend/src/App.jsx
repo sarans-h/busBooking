@@ -21,6 +21,9 @@ import Ticket from './components/Pages/Ticket.jsx'
 import MyProfile from './components/Pages/MyProfile.jsx'
 import ManageBus from './components/Pages/ManageBus.jsx'
 import Breakup from './components/Pages/Breakup.jsx'
+import Admin from './components/Pages/Admin.jsx'
+import { QrReader } from 'react-qr-reader'
+import QReader from './components/Pages/QReader.jsx'
 function App() {
   const dispatch = useDispatch();
 
@@ -42,6 +45,9 @@ function App() {
   <Route path='/mybookings' element={<MyBookings/>}/>
   <Route path='/tick/:bookingId' element={<Ticket/>}/>
   <Route path='/breakup' element={<Breakup/>}/>
+  <Route path='/qr' element={<QReader/>}/>
+
+
 
   {/* <Route path='/businfo/:busId' element={<Test/>}/> */}
 
@@ -54,6 +60,9 @@ function App() {
   </Route>
   <Route element={<ProtectedRoute allowedRole={'travel'}/>}>
   <Route path='/managebus' element={<ManageBus/>}/>
+  </Route>
+  <Route element={<ProtectedRoute allowedRole={'admin'}/>}>
+  <Route path='/admin' element={<Admin/>}/>
   </Route>
   
   

@@ -18,7 +18,7 @@ const MyProfile = () => {
     if (!user) {
       dispatch(loadUser());
     }
-  }, [dispatch, user]);
+  }, []);
   // useEffect(()=>{
   //   if(isUpdated){
   //     toast.success('Profile Updated Successfully')

@@ -21,9 +21,12 @@ app.use(fileUpload());
 const auth=require("./routes/authRoute");
 const bus=require("./routes/busRoutes");
 const book=require("./routes/bookingRoute");
+const admin=require('./routes/adminRoutes')
 app.use("/api/v1/auth",auth);
 app.use("/api/v1/bus",bus);
 app.use("/api/v1/book",book);
+app.use("/api/v1/admin",admin);
+
 app.get('/fetchseats/:bId', async (req, res) => {
     const { bId } = req.params; // Extract busId (bId) from the request params
     // console.log(bId)

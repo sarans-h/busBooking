@@ -12,7 +12,7 @@ function BusShow() {
   const from = searchParams.get('from');
   const to = searchParams.get('to');
   const journeyDate = searchParams.get('date');
-  // console.log(from,to,date);
+  console.log(from,to,journeyDate);
   
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [keyword, setKeyword] = useState('');

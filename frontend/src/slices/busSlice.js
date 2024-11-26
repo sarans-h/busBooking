@@ -109,6 +109,7 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
         // Dispatch the success action with retrieved buses
         dispatch(getAllBusSuccess(data));
     } catch (error) {
+        console.log(error.stack);
         dispatch(
             getAllBusFail(
                 error.response && error.response.data.message

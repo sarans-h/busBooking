@@ -7,19 +7,23 @@ import io from 'socket.io-client';
 import { clearErrors, loadUser } from '../../slices/userSlice';
 import toast, { Toaster } from 'react-hot-toast';
 const socket = io('http://localhost:8080');
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const BusInfo = () => {
+  const stripe = useStripe();
+  const elements = useElements();
   const { busId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { bus, loading } = useSelector((state) => state.bus);
   const [busData, setBusData] = useState(bus);
+  const [fare, setFare] = useState(0);
   const [fromStop, setFromStop] = useState(''); // Selected From stop
   const [toStop, setToStop] = useState(''); // Selected To stop
   const [filteredToStops, setFilteredToStops] = useState([]);
   const [viewingUsers, setViewingUsers] = useState(0); // Number of users currently viewing
   const { user,error } = useSelector((state) => state.user);
-
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [mySelectedSeats, setMySelectedSeats] = useState([]); // Seats selected by the current user
   const [userId, setUserId] = useState(); // Store userId after connecting
@@ -103,21 +107,13 @@ const BusInfo = () => {
       setBusData(bus);
     }
   }, [bus]); // Add 'bus' to dependency array
-  // console.log(busData.name);
 
-  const amenities = ['Wi-Fi', 'Air Conditioning', 'Restroom'];
-  const policies = [
-    'Mask required throughout the journey',
-    'No smoking or alcohol on board',
-    'Baggage limit: 2 bags per passenger',
-  ];
   const handleFromChange = (e) => {
     const selectedFromStop = e.target.value;
     setFromStop(selectedFromStop);
 
     // Find the index of the selected From stop
     const fromIndex = busData.stoppages.findIndex(stop => stop.location === selectedFromStop);
-    console.log(fromIndex);
 
     // Filter To stops to only include those after the From stop
     const availableToStops = busData.stoppages.slice(fromIndex + 1);
@@ -173,10 +169,16 @@ const BusInfo = () => {
     return seat && seat.userId !== userId;
   };
   const handlebook=async()=>{
+    if (!stripe || !elements) {
+      alert('Stripe is not loaded!');
+      return;
+    }
+    const cardElement = elements.getElement(CardElement);
+
     if(!user){
       return toast.error('Login to Book seats')
     }
-
+    setPaymentLoading(true); 
   // Map over mySelectedSeats to create seat updates
   const seatUpdates = mySelectedSeats.map((seatNo) => {
     const seat = s.find((s) => s.seatNumber === seatNo);
@@ -193,6 +195,10 @@ const BusInfo = () => {
     return;
   }
   const journeyDate=busData.journeyDate;
+  const { paymentMethod } = await stripe.createPaymentMethod({
+    type: 'card',
+    card: cardElement,
+  });
   const payload = {
     seatUpdates,
     userId,
@@ -200,19 +206,74 @@ const BusInfo = () => {
     fromStop,
     toStop,
     journeyDate,
-    
+    paymentMethodId:paymentMethod.id,
   };
-  await axios.post('/api/v1/book/m', payload)
-  .then(response => {
-    console.log('Booking response:', response.data);
-    navigate(`/tick/${response.data.bookingId}`);
-  })
-  .catch(error => {
-    console.error('Error during booking:', error);
-  });
+  try {
+    const response = await axios.post('/api/v1/book/m', payload);
+  
+    if (response.data.success) {
+      const clientSecret = response.data.clientSecret;
+
+      // Confirm payment using Stripe
+      const confirmPayment = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: `${user.name}`, // Add customer details if available
+          },
+        },
+      });
+      
+      
+      if (confirmPayment.paymentIntent?.status === 'succeeded') {
+        toast.success('Payment successful!');
+        navigate(`/tick/${response.data.bookingId}`);
+      } else {
+        toast.error('Payment failed, please try again.');
+      }
+    } else {
+      toast.error('Booking failed. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+    toast.error('Something went wrong. Please try again.');
+  }finally{
+    setPaymentLoading(false)
+  }
+  
 
 }
+useEffect(()=>{
+  const calculateFare = (from, to) => {
+    
+    
+    if (!from || !to || !busData.stoppages) {
+        setFare(0);
+        return;
+    }
 
+    const { stoppages } = busData;
+    console.log(busData);
+
+    const fromIndex = stoppages.findIndex((stop) => stop.location === from);
+    const toIndex = stoppages.findIndex((stop) => stop.location === to);
+
+    if (fromIndex === -1 || toIndex === -1) {
+        setFare(0); // Locations not found
+        return;
+    }
+
+    // Ensure fare is calculated only if "to" comes after "from"
+    if (fromIndex < toIndex) {
+        const totalFare = (stoppages[toIndex].fare - stoppages[fromIndex].fare)*mySelectedSeats.length;
+        setFare(totalFare);
+    } else {
+        setFare(0); // No valid route
+    }
+}; 
+calculateFare(fromStop,toStop,mySelectedSeats)
+
+},[fromStop,toStop,mySelectedSeats]);
   return (
     <>
       {
@@ -255,6 +316,32 @@ const BusInfo = () => {
               ))}
             </select>
           </div>
+          <div className="h-60 flex flex-col justify-evenly">
+
+          <h1>
+  Booking for {`${new Date(busData.journeyDate).toDateString()} departuring at ${new Date(busData.journeyDate).toLocaleTimeString("en-GB").substring(0,5)}`}
+</h1>
+<CardElement
+  options={{
+    hidePostalCode: true,
+    style: {
+      base: {
+        fontSize: '18px', // Increase font size
+        height: '50px', // Increase height
+        color: '#424770',
+        '::placeholder': { color: '#aab7c4' },
+        fontFamily: 'Arial, sans-serif',
+        fontSmoothing: 'antialiased',
+      },
+      invalid: {
+        color: '#9e2146',
+      },
+    },
+  }}
+  className="mb-4 p-3 border border-gray-300 rounded-lg shadow-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+  id="card-element"
+/>
+  </div>
 
           {/* Other Information or Actions */}
           {/* Rest of your component code here */}
@@ -348,9 +435,11 @@ const BusInfo = () => {
                 <div className="text-center mt-8 md:hidden">
                   <button
                     className="bg-blue-600 text-white py-2 px-4 rounded-lg text-lg hover:bg-blue-700 disabled:bg-gray-300"
-                    disabled={mySelectedSeats.length === 0}
+                    disabled={!(mySelectedSeats.length > 0 && fare > 0)|| paymentLoading}
                     onClick={handlebook}
                   >
+                    <p>Fare: {`₹${fare}`}</p>
+
                     Book Selected Seats
                   </button>
                 </div>
@@ -379,9 +468,11 @@ const BusInfo = () => {
                 <div className="text-center mt-8 hidden md:flex justify-center  ">
                   <button
                     className="bg-blue-600 text-white py-2 px-4 rounded-lg text-lg hover:bg-blue-700 disabled:bg-gray-300"
-                    disabled={mySelectedSeats.length === 0}
+                    disabled={!(mySelectedSeats.length > 0 && fare > 0)|| paymentLoading}
                     onClick={handlebook}
                   >
+                    <p>Fare: {`₹${fare}` }</p>
+
                     Book Selected Seats
                   </button>
                 </div>

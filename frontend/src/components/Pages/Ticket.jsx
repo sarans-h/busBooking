@@ -1,12 +1,19 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { loadUser } from '../../slices/userSlice';
 
 const Ticket = () => {
-  const { bookingId } = useParams();
-  const [booking, setBooking] = useState(null);
+  const { loading, error, isAuthenticated, user ,isUpdated} = useSelector((state) => state.user);
 
+  const { bookingId } = useParams();
+  const dispatch= useDispatch();
+  const [booking, setBooking] = useState(null);
+  useEffect(() => {
+    dispatch(loadUser());
+  }, []);
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -23,7 +30,7 @@ const Ticket = () => {
   if (!booking) return <p className="text-center text-gray-500">Loading ticket details...</p>;
 
   const { userId, bus, bookingTime, status } = booking;
-  const qrData = JSON.stringify({ bookingId });
+  const qrData = JSON.stringify(bookingId);
 
   return (
     <div className="flex flex-col items-center text-center bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto border border-gray-200 mt-[7.5rem]">

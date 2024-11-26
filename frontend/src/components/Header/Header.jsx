@@ -9,6 +9,7 @@ import {
   Dropdown,
   DropdownMenu,
   Avatar,
+  Tooltip,
   Button,
 } from '@nextui-org/react';
 import s from '../../assets/1119840-200.png';
@@ -16,7 +17,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../slices/userSlice';
 import im from "../../assets/profile.webp"
-
+import { IoScanSharp } from "react-icons/io5";
 const Header = () => {
   const dispatch=useDispatch();
   const location=useLocation();
@@ -108,6 +109,15 @@ function out(){
 
       {/* Avatar dropdown on right */}
       {isAuthenticated ?<NavbarContent as="div" justify="end">
+        {user?.role === 'travel' ? (
+      <Tooltip content="Click to scan tickets" color="" placement="top">
+        <span style={{ fontSize: "1rem", display: "inline-block" }}>
+          <IoScanSharp onClick={()=>navigate("/qr")} />
+        </span>
+      </Tooltip>
+    ) : (
+      <></>
+    )}
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
@@ -134,6 +144,12 @@ function out(){
              {
              user?.role==='travel'?( <DropdownItem onClick={handleManageBusClick}>
                 Manage Buses
+  
+              </DropdownItem>):(null)
+            }
+             {
+             user?.role==='admin'?( <DropdownItem onClick={()=>navigate('/admin')}>
+                Admin DashBoard
   
               </DropdownItem>):(null)
             }

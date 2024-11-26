@@ -88,7 +88,6 @@ const userSlice = createSlice({
         updateProfileReset:(state,action)=>{
             state.isUpdated=false;
         },
-        // Reset errors
         clearErrors: (state) => {
             state.error = null;
         }
@@ -220,9 +219,7 @@ export const updateProfile = (userData) => async (dispatch) => {
         dispatch(updateProfileRequest());
         const config = { headers: { "Content-Type": "multipart/form-data" } };
         const { data } = await axios.put('/api/v1/auth/update/me', userData,config);
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
+
         dispatch(updateProfileSuccess(data.success));
     } catch (error) {
         dispatch(updateProfileFail(error.response && error.response.data.message 

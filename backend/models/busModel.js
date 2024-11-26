@@ -111,7 +111,7 @@ busSchema.virtual("availableSeatsCalc").get(function () {
 // Pre-save hook to initialize seats and calculate available seats
 busSchema.pre('save', function (next) {
     // Initialize seats if they are empty
-    if (this.seats.length === 0) {
+    if (this.seats?.length === 0) {
         for (let i = 1; i <= this.numberOfSeats; i++) {
             this.seats.push({
                 seatNumber: i,
@@ -123,7 +123,7 @@ busSchema.pre('save', function (next) {
     }
 
     // Calculate available seats based on unbooked seats
-    this.availableSeats = this.seats.filter(seat => !seat.isBooked).length;
+    this.availableSeats = this.seats?.filter(seat => !seat.isBooked).length;
 
     next();
 });

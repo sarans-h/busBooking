@@ -57,6 +57,14 @@ const userSchema=new mongoose.Schema({
         type: ObjectId, 
         ref: 'Booking',
     }],
+    totalSpend: {
+        type: Number,
+        default: 0,
+    },
+    totalEarned:{
+        type:Number,
+        default:0
+    },
     resetPasswordToken:String,
     resetPasswordExpire:Date,
 
@@ -77,6 +85,25 @@ userSchema.methods.getJWTToken=function(){
 userSchema.methods.comparePassword=async function(password){
     return await bcrypt.compare(password,this.password);
 }
+
+// Method to update totalSpend
+userSchema.methods.updateTotalSpend = async function () {
+    const user = await this.populate('myBooking', 'fare'); // Populate bookings with the fare field
+    const totalFare = user.myBooking.reduce((acc, booking) => acc + (booking.fare || 0), 0);
+    this.totalSpend = totalFare;
+    await this.save();
+};
+
+// Middleware to calculate totalSpend only when myBooking changes
+userSchema.pre('save', async function (next) {
+    if (this.isModified('myBooking')) {
+        const user = await this.populate('myBooking', 'fare');
+        const totalFare = user.myBooking.reduce((acc, booking) => acc + (booking.fare || 0), 0);
+        this.totalSpend = totalFare;
+    }
+    next();
+});
+
 // userSchema.methods.getResetPasswordToken=function(){
 //     const resetToken= crypto.randomBytes(20).toString("hex");
 //     this.resetPasswordToken=crypto.createHash("sha256").update(resetToken).digest("hex");

@@ -12,6 +12,8 @@ const Home = () => {
   const navigate=useNavigate(); 
   const handleSearch = () => {
     // Navigating to /showBus with query parameters
+    console.log(`/bus?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
+
     navigate(`/bus?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
   };
   return (
@@ -141,7 +143,11 @@ const Home = () => {
 
       {/* Testimonials Section */}
       <div className="py-16 px-4 bg-gradient-to-b from-yellow-100 to-white">
-  <h2 className="text-4xl font-bold text-center mb-12">What Our Riders Say</h2>
+  
+  <h2 className="text-4xl font-bold text-center mb-12">What Our Riders Say </h2>
+  <span className='font-bold text-center mb-12'>
+  <h3>These reviews are coming from my 3rd party reviw provide prject</h3>
+    </span>
   <div className="flex flex-wrap justify-center gap-6">
     <div className="w-full sm:w-[30%] p-6 h-60 border border-gray-300 rounded-lg shadow-md bg-transparent">
       <div className="flex items-center mb-3">

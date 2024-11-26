@@ -12,10 +12,8 @@ const MyBookings = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    if (!user) {
       dispatch(loadUser());
-    }
-  }, [dispatch, user]);
+  }, [dispatch]);
 
   const bookings = user?.myBooking || [];
 
@@ -43,7 +41,7 @@ const MyBookings = () => {
                     className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                       booking.status === 'booked'
                         ? 'bg-green-100 text-green-700'
-                        : booking.status === 'Completed'
+                        : booking.status === 'completed'
                         ? 'bg-yellow-100 text-yellow-700'
                         : 'bg-red-100 text-red-700'
                     }`}
