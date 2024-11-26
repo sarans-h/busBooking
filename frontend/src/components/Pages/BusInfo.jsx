@@ -209,7 +209,7 @@ const BusInfo = () => {
     paymentMethodId:paymentMethod.id,
   };
   try {
-    const response = await axios.post('/api/v1/book/m', payload);
+    const response = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/book/m', payload);
   
     if (response.data.success) {
       const clientSecret = response.data.clientSecret;
