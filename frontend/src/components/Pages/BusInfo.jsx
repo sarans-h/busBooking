@@ -6,7 +6,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { clearErrors, loadUser } from '../../slices/userSlice';
 import toast, { Toaster } from 'react-hot-toast';
-const socket = io('http://localhost:8080');
+const socket = io('https://busbooking-4ykq.onrender.com/');
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const BusInfo = () => {
