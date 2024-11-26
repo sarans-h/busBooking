@@ -4,11 +4,6 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      'react-qr-reader': 'react-qr-reader'
-    }
-  },
   server: {
     proxy: {
       '/api': {
