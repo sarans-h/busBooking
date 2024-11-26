@@ -85,7 +85,7 @@ export const createBus=(busData)=>async(dispatch)=>{
         // console.log(busData);
         
         const config = { headers: { "Content-Type": "multipart/form-data" } }
-        const {data} = await axios.post('/api/v1/bus/add', busData,config);
+        const {data} = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/bus/add', busData,config);
         dispatch(newBusSuccess(data.bus));
 
     }
@@ -98,7 +98,7 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
         dispatch(getAllBusRequest());
 
         // Build the query string dynamically to include from, to, and journeyDate if provided
-        let query = `/api/v1/bus/buses?keyword=${keyword}&page=${currentPage}`;
+        let query = `https://busbooking-4ykq.onrender.com/api/v1/bus/buses?keyword=${keyword}&page=${currentPage}`;
         if (from) query += `&from=${from}`;
         if (to) query += `&to=${to}`;
         if (journeyDate) query += `&date=${journeyDate}`;
@@ -124,7 +124,7 @@ export const getBus = (busId) => async (dispatch) => {
     // console.log("getBus called with busId: ", busId);  // Add this log
     try {
       dispatch(getBusRequest());
-      const { data } = await axios.get(`/api/v1/bus/getSingle/${busId}`);
+      const { data } = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/bus/getSingle/${busId}`);
     //   console.log(data);
       
       dispatch(getBusSuccess(data.bus));
