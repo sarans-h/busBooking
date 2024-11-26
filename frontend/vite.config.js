@@ -7,12 +7,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://busbooking-4ykq.onrender.com/',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/fetchseats': 'http://localhost:8080',
-      '/book':'http://localhost:8080'
+      '/fetchseats': 'https://busbooking-4ykq.onrender.com/',
+      '/book':'https://busbooking-4ykq.onrender.com/'
     },
   },
 })
