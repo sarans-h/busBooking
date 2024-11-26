@@ -12,7 +12,7 @@ const Home = () => {
   const navigate=useNavigate(); 
   const handleSearch = () => {
     // Navigating to /showBus with query parameters
-    console.log(`/bus?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
+    // console.log(`/bus?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
 
     navigate(`/bus?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
   };
