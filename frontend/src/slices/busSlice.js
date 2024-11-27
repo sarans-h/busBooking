@@ -84,7 +84,7 @@ export const createBus=(busData)=>async(dispatch)=>{
         dispatch(newBusRequest());
         // console.log(busData);
         
-        const config = { headers: { "Content-Type": "multipart/form-data" } }
+        const config = { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true  }
         const {data} = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/bus/add', busData,config);
         dispatch(newBusSuccess(data.bus));
 
@@ -104,7 +104,7 @@ export const allBuses =  ({ keyword = "", currentPage = 1, from = "", to = "", j
         if (journeyDate) query += `&date=${journeyDate}`;
 
         // Make the request with the built query string
-        const { data } = await axios.get(query);
+        const { data } = await axios.get(query,{ withCredentials: true });
 
         // Dispatch the success action with retrieved buses
         dispatch(getAllBusSuccess(data));
@@ -124,7 +124,7 @@ export const getBus = (busId) => async (dispatch) => {
     // console.log("getBus called with busId: ", busId);  // Add this log
     try {
       dispatch(getBusRequest());
-      const { data } = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/bus/getSingle/${busId}`);
+      const { data } = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/bus/getSingle/${busId}`,{ withCredentials: true });
     //   console.log(data);
       
       dispatch(getBusSuccess(data.bus));
