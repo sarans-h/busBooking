@@ -169,7 +169,13 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
     try {
         dispatch(loadUserRequest());
-        const { data } = await axios.get('https://busbooking-4ykq.onrender.com/api/v1/auth/me'); // Assuming this endpoint fetches user info if authenticated
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true, // Ensure cookies (JWT token) are sent with the request
+        };
+        const { data } = await axios.get('https://busbooking-4ykq.onrender.com/api/v1/auth/me', config); // API call to get user info
         dispatch(loadUserSuccess(data.user));
     } catch (error) {
         dispatch(loadUserFail(
@@ -179,6 +185,7 @@ export const loadUser = () => async (dispatch) => {
         ));
     }
 };
+
 
 // Thunk to logout user
 export const logoutUser = () => async (dispatch) => {
