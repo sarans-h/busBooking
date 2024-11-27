@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'https://busbooking-4ykq.onrender.com',
-        secure: false, // Only use if testing with self-signed SSL
+        secure: true, // Only use if testing with self-signed SSL
         changeOrigin: true,
         
         // rewrite: (path) => path.replace(/^\/api/, ''),
