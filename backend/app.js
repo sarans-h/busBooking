@@ -12,7 +12,10 @@ const mongoose = require("mongoose");
 const Bus = require('./models/busModel');
 
 dotenv.config({path:'./config/config.env'});
-app.use(cors());
+app.use(cors(({
+        origin: "https://bus-booking-alpha.vercel.app", // Frontend domain
+        credentials: true, // Allow credentials (cookies)
+    }));
 app.use(express.json());
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
