@@ -17,7 +17,7 @@ const Ticket = () => {
   useEffect(() => {
     const fetchBooking = async () => {
       try {
-        const response = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/book/tick/${bookingId}`);
+        const response = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/book/tick/${bookingId}`,{ withCredentials: true });
         console.log(response.data);
         setBooking(response.data);
       } catch (error) {
