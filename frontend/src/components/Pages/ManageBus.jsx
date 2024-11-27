@@ -29,7 +29,7 @@ const ManageBus = () => {
   useEffect(() => {
     const fetchRevenue = async () => {
       try {
-        const response = await axios.get("api/v1/book/revenue");
+        const response = await axios.get("https://busbooking-4ykq.onrender.com/api/v1/book/revenue",{ withCredentials: true });
         console.log(response.data)
         setRevenue(response.data.totalRevenue || 0); // Assuming API returns `{ revenue: number }`
       } catch (err) {
