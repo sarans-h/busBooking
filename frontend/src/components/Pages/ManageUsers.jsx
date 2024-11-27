@@ -11,7 +11,7 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("https://busbooking-4ykq.onrender.com/api/v1/admin/allusers");
+      const { data } = await axios.get("https://busbooking-4ykq.onrender.com/api/v1/admin/allusers",{ withCredentials: true });
       setUsers(data.users);
       setLoading(false);
     } catch (err) {
@@ -23,7 +23,7 @@ const ManageUsers = () => {
   // Delete user
   const deleteUser = async (id) => {
     try {
-      await axios.delete(`https://busbooking-4ykq.onrender.com/api/v1/admin/user/${id}`);
+      await axios.delete(`https://busbooking-4ykq.onrender.com/api/v1/admin/user/${id}`,{ withCredentials: true });
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id)); // Update local state
       toast.success("User deleted successfully!");
     } catch (err) {
