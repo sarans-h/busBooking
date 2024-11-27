@@ -150,8 +150,9 @@ export const loginUser = ({ email, password }) => async (dispatch) => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                 withCredentials: true,
-            }
+                 
+            },
+            withCredentials: true,
         };
         const { data } = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/auth/login', { email, password }, config);
         dispatch(loginSuccess(data.user));
