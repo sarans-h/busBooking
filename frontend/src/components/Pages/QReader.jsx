@@ -27,7 +27,7 @@ const QReader = () => {
     try {
       const url = "https://busbooking-4ykq.onrender.com/api/v1/book/completed/" + scanResult.substring(1, scanResult.length - 1);
       console.log(url);
-      const response = await axios.put(url);
+      const response = await axios.put(url,{ withCredentials: true });
       toast.success(response.data.message || "Booking marked as completed!");
     } catch (error) {
       console.error(error);
