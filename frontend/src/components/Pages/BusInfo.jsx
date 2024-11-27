@@ -52,7 +52,7 @@ const BusInfo = () => {
 
     const fetchSeats = async () => {
       try {
-        const response = await axios.get(`https://busbooking-4ykq.onrender.com/fetchseats/${busId}`);
+        const response = await axios.get(`https://busbooking-4ykq.onrender.com/fetchseats/${busId}`,{ withCredentials: true });
 
         // console.(response); // Log the entire response object
         // console.log(response.data); // Log response data (should contain seats)
@@ -209,7 +209,7 @@ const BusInfo = () => {
     paymentMethodId:paymentMethod.id,
   };
   try {
-    const response = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/book/m', payload);
+    const response = await axios.post('https://busbooking-4ykq.onrender.com/api/v1/book/m', payload,{ withCredentials: true });
   
     if (response.data.success) {
       const clientSecret = response.data.clientSecret;
