@@ -22,7 +22,7 @@ const ManageBuses = () => {
 
   const handleDelete = async (busId, busName) => {
     try {
-      await axios.delete(`https://busbooking-4ykq.onrender.com/api/v1/bus/delete/${busId}`);
+      await axios.delete(`https://busbooking-4ykq.onrender.com/api/v1/bus/delete/${busId}`,{ withCredentials: true });
       toast.success(`${busName} deleted successfully!`);
       setBuses(buses.filter((bus) => bus._id !== busId));
       onOpenChange(false);  // Close modal after deletion
@@ -61,7 +61,7 @@ const ManageBuses = () => {
       // console.log(selectedBus._id);
       await axios.put(`https://busbooking-4ykq.onrender.com/api/v1/bus/update/${selectedBus._id}`, {
         name: busName
-      });
+      },{ withCredentials: true });
       toast.success("Bus updated successfully!");
       setBuses(buses.map(bus => bus._id === selectedBus._id ? { ...bus, name: busName, stoppages } : bus));  // Update the bus in state
       onOpenChange(false);  // Close the modal
@@ -73,7 +73,7 @@ const ManageBuses = () => {
   useEffect(() => {
     const fetchBuses = async () => {
       try {
-        const response = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/bus/buses?page=${currentPage}`);
+        const response = await axios.get(`https://busbooking-4ykq.onrender.com/api/v1/bus/buses?page=${currentPage}`,{ withCredentials: true });
         setBuses(response.data.buses);
         setTotalBuses(response.data.totalBuses);
       } catch (err) {
