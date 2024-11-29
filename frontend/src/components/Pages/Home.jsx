@@ -146,7 +146,7 @@ const Home = () => {
   
   <h2 className="text-4xl font-bold text-center mb-12">What Our Riders Say </h2>
   <span className='font-bold text-center mb-12'>
-  <h3>These reviews are coming from my 3rd party reviw provide prject</h3>
+  <h3>These reviews will be coming from my 3rd party review provider project</h3>
     </span>
   <div className="flex flex-wrap justify-center gap-6">
     <div className="w-full sm:w-[30%] p-6 h-60 border border-gray-300 rounded-lg shadow-md bg-transparent">
