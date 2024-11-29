@@ -8,7 +8,6 @@ const QReader = () => {
 
   const handleScan = (data) => {
     if (data) {
-      // console.log(typeof data);
       setScanResult(data.text); // Use `.text` if the QR data comes as an object
     }
   };
@@ -25,9 +24,11 @@ const QReader = () => {
     }
 
     try {
-      const url = "https://busbooking-4ykq.onrender.com/api/v1/book/completed/" + scanResult.substring(1, scanResult.length - 1);
+      const url =
+        "https://busbooking-4ykq.onrender.com/api/v1/book/completed/" +
+        scanResult.substring(1, scanResult.length - 1);
       console.log(url);
-      const response = await axios.put(url,{ withCredentials: true });
+      const response = await axios.put(url, { withCredentials: true });
       toast.success(response.data.message || "Booking marked as completed!");
     } catch (error) {
       console.error(error);
@@ -40,6 +41,12 @@ const QReader = () => {
     width: 320,
   };
 
+  // Determine device type and camera preferences
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const videoConstraints = isMobile
+    ? { facingMode: { exact: "environment" } } // Back camera on mobile
+    : { facingMode: "user" }; // Default camera on desktop
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <Toaster />
@@ -48,6 +55,7 @@ const QReader = () => {
         <QrScanner
           delay={300}
           style={previewStyle}
+          constraints={{ video: videoConstraints }}
           onError={handleError}
           onScan={handleScan}
         />
