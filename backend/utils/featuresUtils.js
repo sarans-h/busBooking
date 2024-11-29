@@ -34,9 +34,9 @@ class FeaturesUtils {
         const conditions = {};
     
         // Check if 'date' is provided, if yes, add it to the query conditions
-        if (date) {
-            conditions.journeyDate = new Date(date);
-        }
+        // if (date) {
+        //     conditions.journeyDate = new Date(date);
+        // }
     
         // Handle stoppages conditions
         if (from || to) {
@@ -60,6 +60,13 @@ class FeaturesUtils {
             if (conditions.stoppages.$all.length === 0) {
                 delete conditions.stoppages;
             }
+        }
+        if (date) {
+            const startDate = new Date(date);
+            const endDate = new Date(date);
+            endDate.setDate(endDate.getDate() + 1); // Include the entire day range
+    
+            conditions.journeyDate = { $gte: startDate, $lt: endDate };
         }
     
         // Apply the dynamically built query conditions if any
