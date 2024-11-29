@@ -63,6 +63,8 @@ exports.logout=catchAsyncErrors(async (req,res,next)=>{
     res.cookie("token",null,{
         expires:new Date(Date.now()),
         httpOnly:true,
+        secure: true, 
+        sameSite: "None", 
     })
     res.status(200).json({
         success:true,
@@ -87,9 +89,9 @@ exports.updateProfile=catchAsyncErrors(async(req,res,next)=>{
     // console.log("holaa");
     // console.log('====================================');
     try{
-        console.log('====================================');
-        console.log(req.body);
-        console.log('====================================');
+        // console.log('====================================');
+        // console.log(req.body);
+        // console.log('====================================');
         const newUserData={
         name:req.body.name,
         email:req.body.email,
