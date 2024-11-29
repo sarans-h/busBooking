@@ -212,11 +212,11 @@ const Login = () => {
           )}
         </form>
 
-        {isLogin && (
+{/*         {isLogin && (
           <p className="mt-4 text-yellow-300 hover:underline text-center">
             <Link to="/password/forgot">Forgot Password?</Link>
           </p>
-        )}
+        )} */}
         <p
           onClick={toggleMode}
           className="mt-4 text-yellow-300 cursor-pointer hover:underline text-center"
