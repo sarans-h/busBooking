@@ -1,5 +1,4 @@
 # Real-Time Seat Booking Application
-//  I KNOW I HAVE PUSHED STRIPE KEYS BUT THEY ARE OF TEST ACCOUNT //
 This is a full-stack application for booking seats in real-time, featuring a backend powered by Node.js, Express, and MongoDB, and a frontend built with React.
 
 ---
